@@ -19,7 +19,7 @@ end = df_task.at[0, 'end']
 
 N=20 
 
-for j in range(int(start),int(end)):
+for j in range(int(start),int(end)+1):
 
     P_matrix[0] = df_task.at[0, 'left bound'] + ((df_task.at[0, 'right bound'] - df_task.at[0, 'left bound'])* df_P_values.at[j, 't1'])
     P_matrix[1] = df_task.at[1, 'left bound'] + ((df_task.at[1, 'right bound'] - df_task.at[1, 'left bound'])* df_P_values.at[j, 't2'])
