@@ -6,10 +6,9 @@ import numpy as np
 from constants import *
 from variables import *
 
-# WRONG MECHANISM
+# FIXED MECHANISM
 
 dyad_break = 0
-
 
 for i in range(1, N + 1):
     angle_AB_values.append((angle0 * math.pi / 180 + (i - 1) / (N - 1) * 2 * math.pi))
