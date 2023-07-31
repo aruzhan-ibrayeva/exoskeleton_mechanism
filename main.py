@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import pandas as pd
 import numpy as np
-from constants import *
 from variables import *
 
 # ACCESSING GENERATOR
@@ -12,12 +11,11 @@ file_path = r"LPtau-Generator.xlsx"
 df_P_values = pd.read_excel(file_path, sheet_name='generator')
 df_task = pd.read_excel(file_path, sheet_name = 'Task')
 dyad_break = 0
+final_P_matrix = []
 
-P_matrix = np.zeros(10)
 start = df_task.at[0, 'start']  # the row 2 in excel and the row 0 in df_task are the same
 end = df_task.at[0, 'end']
 
-N=20 
 
 for j in range(int(start),int(end)+1):
 
@@ -116,7 +114,6 @@ for j in range(int(start),int(end)+1):
         X_solution = np.linalg.solve(A_matrix, B_matrix)
         print("Solution:")
         print(X_solution)
-
 
     fig, ax = plt.subplots()
     ax.set_xlim(-150, +60)

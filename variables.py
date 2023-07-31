@@ -1,5 +1,4 @@
 import numpy as np
-from constants import *
 table = []
 angle_AB_values = [0]
 xB_values = [0]
@@ -18,6 +17,9 @@ cos_mu_values = [0]
 xS_values = [0]
 yS_values = [0]
 
+P_matrix = np.zeros(10)
 
+
+N=20 
 N1 = 10
 k, m, k_alpha, k_beta, b5, b6, b7, b8, k_m = 0, 0, 0, 0, 0, 0, 0, 0, 0
