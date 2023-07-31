@@ -1,7 +1,0 @@
-1. Check matrixes with the working and fix errors (in mechanism)
-dyad_break condition is not met?
-2. Understand the logic(using for loops/...)
-3. dyad_break == 1 -> go to the next line
-4. accessing a_0 and a_end
-5. accessing boundaries & create variables...
-6. generator values -> calculations using the boundaries

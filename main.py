@@ -6,6 +6,7 @@ import numpy as np
 from constants import *
 from variables import *
 
+# WRONG MECHANISM
 
 dyad_break = 0
 
@@ -21,14 +22,15 @@ for i in range(1, N + 1):
     DB_distance = math.sqrt((xB_values[i] - point_D_coords[0]) ** 2 + (yB_values[i] - point_D_coords[1]) ** 2)
 
 
-    cos_psi_values.append
-    (
-        (CD_distance ** 2 + DB_distance ** 2 - CB_distance ** 2) / (2 * CD_distance * DB_distance)
-    )
+    if i >= len(cos_psi_values):
+        cos_psi_values.append(
+            (CD_distance ** 2 + DB_distance ** 2 - CB_distance ** 2) / (2 * CD_distance * DB_distance)
+        )
 
 
     if (abs(cos_psi_values[i]) <= 1):
         alpha = math.acos(cos_psi_values[i])
+    #     print(alpha)
     else:
         dyad_break = 1  
         break
@@ -90,10 +92,11 @@ if(dyad_break==0):
                             [k, -m, -N1, 0, -(N1/2)],
                             [m, k, 0, -N1, 0],
                             [k_alpha, -k_beta, -(N1/2), 0, a55]])
-    print(A_matrix)
-
+    print("A_matrix: ", A_matrix) # debugging
 
     B_matrix = np.array([b5, b6, b7, b8, -k_m])
+    print ("B matrix: ", B_matrix) # debugging
+
     X_solution = np.linalg.solve(A_matrix, B_matrix)
     print("Solution:")
     print(X_solution)
@@ -157,4 +160,5 @@ if(dyad_break==0):
 
     ani = animation.FuncAnimation(fig, update, frames=N, interval=500, blit=True)
     plt.show()
+    print(cos_psi_values)
     # end if

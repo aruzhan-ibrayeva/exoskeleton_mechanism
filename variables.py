@@ -13,8 +13,8 @@ yE_values = [0]
 xF_values = [0]
 yF_values = [0]
 beta_values = [0]
-cos_psi_values = [0]*(N+1)
-cos_mu_values = [0]*(N+1)
+cos_psi_values = [0]
+cos_mu_values = [0]
 xS_values = [0]
 yS_values = [0]
 
