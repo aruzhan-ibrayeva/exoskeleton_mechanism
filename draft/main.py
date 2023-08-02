@@ -3,25 +3,24 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import pandas as pd
 import numpy as np
-import openpyxl
+from openpyxl import load_workbook
 from variables import *
 
 # ACCESSING GENERATOR
 
 file_path = r"LPtau-Generator.xlsx"
 df_P_values = pd.read_excel(file_path, sheet_name='generator')
-df_task = pd.read_excel(file_path, sheet_name = 'Task')
+df_task = pd.read_excel(file_path, sheet_name='Task')
 dyad_break = 0
 final_P_matrix = []
 
-workbook = openpyxl.load_workbook(file_path)
-worksheet = workbook['Trial_Table'] 
-
-start = df_task.at[0, 'start']  # the row 2 in excel and the row 0 in df_task are the same
+start = df_task.at[0, 'start']
 end = df_task.at[0, 'end']
 
+# Create an empty DataFrame to store the Trial_Table
+trial_table = pd.DataFrame(columns=['Alpt', 'par1', 'par2', 'par3', 'par4', 'par5', 'par6', 'par7', 'par8', 'par9', 'par10', 'x1', 'x2', 'x3', 'x4', 'x5'])
 
-for j in range(int(start),int(end)+1):
+for j in range(int(start), int(end) + 1):
 
     P_matrix[0] = df_task.at[0, 'left bound'] + ((df_task.at[0, 'right bound'] - df_task.at[0, 'left bound'])* df_P_values.at[j, 't1'])
     P_matrix[1] = df_task.at[1, 'left bound'] + ((df_task.at[1, 'right bound'] - df_task.at[1, 'left bound'])* df_P_values.at[j, 't2'])
@@ -119,77 +118,108 @@ for j in range(int(start),int(end)+1):
         print("Solution:")
         print(X_solution)
 
-        fig, ax = plt.subplots()
-        ax.set_title(f'Trajectory Animation for alpt = {j}')
-        ax.set_xlim(-150, +60)
-        ax.set_ylim(-150, +60)
-        line_AB, = ax.plot([], [], 'k-', lw=2)  # Line AB
-        line_DC, = ax.plot([], [], 'k-', lw=2)  # Line DC
-        line_BC, = ax.plot([], [], 'k-', lw=2)  # Line BC
-        line_CG, = ax.plot([], [], 'k-', lw=2)  # Line for trajectory of G
-        line_CG_original, = ax.plot([], [], 'k-', lw=2)  # Original line for CG
-        line_EF, = ax.plot([], [], 'k-', lw=2)  # Line for EF
-        line_FG, = ax.plot([], [], 'k-', lw=2)  # Line for FG
-        line_FS, = ax.plot([], [], 'k-', lw=2)  # Line for FP
-        line_GS, = ax.plot([], [], 'k-', lw=2)  # Line for GP
-        point_A, = ax.plot(point_A_coords[0], point_A_coords[1], 'ko', markersize=8)  # Point A
-        point_B, = ax.plot([], [], 'ko', markersize=8)  # Point B
-        point_C, = ax.plot([], [], 'ko', markersize=8)  # Point C
-        point_D, = ax.plot(point_D_coords[0], point_D_coords[1], 'ko', markersize=8)  # Point D
-        point_G, = ax.plot([], [], 'ko', markersize=8)  # Point G
-        point_E, = ax.plot([], [], 'ko', markersize=8)  # Point E
-        point_F, = ax.plot([], [], 'ko', markersize=8)  # Point F
+        X_solution_values = X_solution.tolist()
+        trial_table_row = {
+            'Alpt': j,
+            'par1': P_matrix[0],
+            'par2': P_matrix[1],
+            'par3': P_matrix[2],
+            'par4': P_matrix[3],
+            'par5': P_matrix[4],
+            'par6': P_matrix[5],
+            'par7': P_matrix[6],
+            'par8': P_matrix[7],
+            'par9': P_matrix[8],
+            'par10': P_matrix[9],
+            'x1': X_solution_values[0],
+            'x2': X_solution_values[1],
+            'x3': X_solution_values[2],
+            'x4': X_solution_values[3],
+            'x5': X_solution_values[4]
+        }
+        trial_table_rows.append(trial_table_row)
 
-        xS_local = X_solution[0]
-        yS_local = X_solution[1]
-        point_S, = ax.plot([], [], 'ko', markersize=8)  # Point S
-        trajectory_S, = ax.plot([], [], 'r--', lw=2)  # Trajectory of point S
+    fig, ax = plt.subplots()
+    ax.set_xlim(-150, +60)
+    ax.set_ylim(-150, +60)
+    line_AB, = ax.plot([], [], 'k-', lw=2)  # Line AB
+    line_DC, = ax.plot([], [], 'k-', lw=2)  # Line DC
+    line_BC, = ax.plot([], [], 'k-', lw=2)  # Line BC
+    line_CG, = ax.plot([], [], 'k-', lw=2)  # Line for trajectory of G
+    line_CG_original, = ax.plot([], [], 'k-', lw=2)  # Original line for CG
+    line_EF, = ax.plot([], [], 'k-', lw=2)  # Line for EF
+    line_FG, = ax.plot([], [], 'k-', lw=2)  # Line for FG
+    line_FS, = ax.plot([], [], 'k-', lw=2)  # Line for FP
+    line_GS, = ax.plot([], [], 'k-', lw=2)  # Line for GP
+    point_A, = ax.plot(point_A_coords[0], point_A_coords[1], 'ko', markersize=8)  # Point A
+    point_B, = ax.plot([], [], 'ko', markersize=8)  # Point B
+    point_C, = ax.plot([], [], 'ko', markersize=8)  # Point C
+    point_D, = ax.plot(point_D_coords[0], point_D_coords[1], 'ko', markersize=8)  # Point D
+    point_G, = ax.plot([], [], 'ko', markersize=8)  # Point G
+    point_E, = ax.plot([], [], 'ko', markersize=8)  # Point E
+    point_F, = ax.plot([], [], 'ko', markersize=8)  # Point F
 
-        # Calculating S
-        for i in range(1, N + 1):
-            xS_values.append((xG_values[i] + xS_local * math.cos(beta_values[i])) - (yS_local * math.sin(beta_values[i])))
-            yS_values.append((yG_values[i] + xS_local * math.sin(beta_values[i])) + (yS_local * math.cos(beta_values[i])))
+    xS_local = X_solution[0]
+    yS_local = X_solution[1]
+    point_S, = ax.plot([], [], 'ko', markersize=8)  # Point S
+    trajectory_S, = ax.plot([], [], 'r--', lw=2)  # Trajectory of point S
 
-        # table append
-        for i in range(1, N+1):
-            angle_AB = angle_AB_values[i]
-            xB = xB_values[i]
-            yB = yB_values[i]
-            xC = xC_values[i]
-            yC = yC_values[i]
-            xG = xG_values[i]
-            yG = yG_values[i]
-            xE = xE_values[i]
-            yE = yE_values[i]
-            xF = xF_values[i]
-            yF = yF_values[i]
-            xS = xS_values[i]
-            yS = yS_values[i]
-            table.append((i, angle_AB, xB, yB, xC, yC, xG, yG, xE, yE, xF, yF, xS, yS))
+    # Calculating S
+    for i in range(1, N + 1):
+        xS_values.append((xG_values[i] + xS_local * math.cos(beta_values[i])) - (yS_local * math.sin(beta_values[i])))
+        yS_values.append((yG_values[i] + xS_local * math.sin(beta_values[i])) + (yS_local * math.cos(beta_values[i])))
 
-        def update(frame):
-            i, angle_AB, xB, yB, xC, yC, xG, yG, xE, yE, xF, yF, xS, yS = table[frame]
-            line_AB.set_data([point_A_coords[0], xB], [point_A_coords[1], yB])
-            line_DC.set_data([point_D_coords[0], xC], [point_D_coords[1], yC])
-            line_BC.set_data([xB, xC], [yB, yC])
-            line_CG.set_data([xC, xG], [yC, yG])
-            line_CG_original.set_data([xC, xG], [yC, yG])
-            line_EF.set_data([xE, xF], [yE, yF])
-            line_FG.set_data([xF, xG], [yF, yG])
-            line_FS.set_data([xF, xS], [yF, yS])
-            line_GS.set_data([xG, xS], [yG, yS])
-            point_B.set_data(xB, yB)
-            point_C.set_data(xC, yC)
-            point_G.set_data(xG, yG)
-            point_E.set_data(xE, yE)
-            point_F.set_data(xF, yF)
-            point_S.set_data(xS, yS)
-            trajectory_S.set_data([row[12] for row in table[:frame + 1]], [row[13] for row in table[:frame + 1]])
-            return line_AB, line_DC, line_BC, line_CG, line_CG_original, line_EF, line_FG, line_FS, line_GS, point_B, point_C, point_G, point_E, point_F, point_S, trajectory_S
+    # table append
+    for i in range(1, N+1):
+        angle_AB = angle_AB_values[i]
+        xB = xB_values[i]
+        yB = yB_values[i]
+        xC = xC_values[i]
+        yC = yC_values[i]
+        xG = xG_values[i]
+        yG = yG_values[i]
+        xE = xE_values[i]
+        yE = yE_values[i]
+        xF = xF_values[i]
+        yF = yF_values[i]
+        xS = xS_values[i]
+        yS = yS_values[i]
+        table.append((i, angle_AB, xB, yB, xC, yC, xG, yG, xE, yE, xF, yF, xS, yS))
+    
+    with pd.ExcelWriter("table_data.xlsx", engine='openpyxl') as writer:
+        df = pd.DataFrame(table, columns=["i", "φ", "xB", "yB", "xC", "yC", "xG", "yG", "xE", "yE", "xF", "yF", "xS", "yS"])
+        df.to_excel(writer, index=False)
+        writer.save()
 
-        # Saving the table as an excel file
-        df = pd.DataFrame(table, columns = ["i", "φ", "xB", "yB", "xC", "yC", "xG", "yG", "xE", "yE", "xF", "yF", "xS", "yS"])
-        df.to_excel("table_data.xlsx", index=False)
+    def update(frame):
+        i, angle_AB, xB, yB, xC, yC, xG, yG, xE, yE, xF, yF, xS, yS = table[frame]
+        line_AB.set_data([point_A_coords[0], xB], [point_A_coords[1], yB])
+        line_DC.set_data([point_D_coords[0], xC], [point_D_coords[1], yC])
+        line_BC.set_data([xB, xC], [yB, yC])
+        line_CG.set_data([xC, xG], [yC, yG])
+        line_CG_original.set_data([xC, xG], [yC, yG])
+        line_EF.set_data([xE, xF], [yE, yF])
+        line_FG.set_data([xF, xG], [yF, yG])
+        line_FS.set_data([xF, xS], [yF, yS])
+        line_GS.set_data([xG, xS], [yG, yS])
+        point_B.set_data(xB, yB)
+        point_C.set_data(xC, yC)
+        point_G.set_data(xG, yG)
+        point_E.set_data(xE, yE)
+        point_F.set_data(xF, yF)
+        point_S.set_data(xS, yS)
+        trajectory_S.set_data([row[12] for row in table[:frame + 1]], [row[13] for row in table[:frame + 1]])
+        return line_AB, line_DC, line_BC, line_CG, line_CG_original, line_EF, line_FG, line_FS, line_GS, point_B, point_C, point_G, point_E, point_F, point_S, trajectory_S
+    
+    ani = animation.FuncAnimation(fig, update, frames=N, interval=500, blit=True)
+    plt.show()
+    print(cos_psi_values)
+    # end if
 
-        ani = animation.FuncAnimation(fig, update, frames=N, interval=500, blit=True)
-        plt.show()
+trial_table = pd.DataFrame(trial_table_rows)
+
+# Save the trial_table DataFrame to the sheet called "Trial_Table" in the same file path
+with pd.ExcelWriter(file_path, engine='openpyxl') as writer:
+    writer.book = load_workbook(file_path)
+    trial_table.to_excel(writer, sheet_name='Trial_Table', index=False)
+    writer.book.save
