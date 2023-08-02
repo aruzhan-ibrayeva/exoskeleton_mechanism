@@ -11,7 +11,6 @@ from variables import *
 file_path = r"LPtau-Generator.xlsx"
 df_P_values = pd.read_excel(file_path, sheet_name='generator')
 df_task = pd.read_excel(file_path, sheet_name = 'Task')
-dyad_break = 0
 final_P_matrix = []
 
 workbook = openpyxl.load_workbook(file_path)
@@ -20,8 +19,8 @@ worksheet = workbook['Trial_Table']
 start = df_task.at[0, 'start']  # the row 2 in excel and the row 0 in df_task are the same
 end = df_task.at[0, 'end']
 
-
 for j in range(int(start),int(end)+1):
+    dyad_break = 0  # Reset dyad_break for each iteration
 
     P_matrix[0] = df_task.at[0, 'left bound'] + ((df_task.at[0, 'right bound'] - df_task.at[0, 'left bound'])* df_P_values.at[j, 't1'])
     P_matrix[1] = df_task.at[1, 'left bound'] + ((df_task.at[1, 'right bound'] - df_task.at[1, 'left bound'])* df_P_values.at[j, 't2'])
@@ -88,6 +87,8 @@ for j in range(int(start),int(end)+1):
 
         beta_values.append(math.atan2(yF_values[i] - yG_values[i], xF_values[i] - xG_values[i]))
 
+    # print(f"dyad_break for {j} is {dyad_break}") # Debugging
+
     if(dyad_break==1):
         print("dyad_break condition is not met; table was filled with 0's")
         # FILL THE TABLE WITH 0'S
@@ -116,8 +117,17 @@ for j in range(int(start),int(end)+1):
         # print ("B matrix: ", B_matrix) # debugging
 
         X_solution = np.linalg.solve(A_matrix, B_matrix)
-        print("Solution:")
+        print(f"Solution for {j}:")  # Debug
         print(X_solution)
+
+        row_number = j - 1 + 2  # Adding 2 because Excel rows are 1-indexed and there's a header row
+        for idx, value in enumerate(X_solution, start=12):  # Column index starts at 11 (column 'x1' in Excel)
+            worksheet.cell(row=row_number, column=idx, value=value)
+
+        # Fill the 'Alpt' and 'par1' to 'par10' columns
+        worksheet.cell(row=row_number, column=1, value=j)  # 'Alpt' column
+        for idx, par_value in enumerate(P_matrix, start=2):  # 'par1' to 'par10' columns
+            worksheet.cell(row=row_number, column=idx, value=par_value)
 
         fig, ax = plt.subplots()
         ax.set_title(f'Trajectory Animation for alpt = {j}')
@@ -193,3 +203,4 @@ for j in range(int(start),int(end)+1):
 
         ani = animation.FuncAnimation(fig, update, frames=N, interval=500, blit=True)
         plt.show()
+        workbook.save('LPtau-Generator.xlsx')
