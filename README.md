@@ -23,6 +23,6 @@ The project aimed to improve the performance of the lower limb exoskeleton mecha
 ## Usage
 
 To use this codebase, clone the repository to your local machine and follow the instructions:
-1. 
-2.
+1. dsmhckswjed
+2.,dsc/l
 3. 
