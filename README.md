@@ -19,10 +19,3 @@ The project aimed to improve the performance of the lower limb exoskeleton mecha
 - **Python Development:** The project's codebase was developed using Python, which includes custom algorithms to manipulate animation data.
 
 - **Multidisciplinary Collaboration:** The development process involved close collaboration with a multidisciplinary team to integrate animated simulations into a broader project.
-
-## Usage
-
-To use this codebase, clone the repository to your local machine and follow the instructions:
-1. dsmhckswjed
-2.,dsc/l
-3. 
