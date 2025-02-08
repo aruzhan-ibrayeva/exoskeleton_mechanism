@@ -91,8 +91,7 @@ for j in range(int(start),int(end)+1):
 
     if(dyad_break==1):
         print("dyad_break condition is not met; table was filled with 0's")
-        # FILL THE TABLE WITH 0'S
-
+        
     if(dyad_break==0):
         for i in range(1, N1+1):
             k += math.cos(beta_values[i])
